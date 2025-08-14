@@ -1,0 +1,1 @@
+// home.js - Archivo inicial

@@ -1,0 +1,1 @@
+// appointmentSocket.js - Archivo inicial

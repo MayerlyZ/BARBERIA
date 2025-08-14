@@ -1,0 +1,1 @@
+// admin.js - Archivo inicial

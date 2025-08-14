@@ -1,0 +1,1 @@
+// Customer.js - Archivo inicial

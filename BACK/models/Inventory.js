@@ -1,0 +1,1 @@
+// Inventory.js - Archivo inicial

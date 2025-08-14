@@ -1,0 +1,1 @@
+// errorHandler.js - Archivo inicial

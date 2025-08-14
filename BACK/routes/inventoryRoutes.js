@@ -1,0 +1,1 @@
+// inventoryRoutes.js - Archivo inicial

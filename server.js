@@ -8,6 +8,9 @@ import serviceRoutes from "./BACK/routes/serviceRoutes.js";
 import customerRoutes from "./BACK/routes/customerRoutes.js";
 import userRoutes from "./BACK/routes/userRoutes.js";
 import conectarDB from "./BACK/config/db.js";
+import appointmentRoutes from "./BACK/routes/appointmentRoutes.js";
+import appointmentSocket from "./BACK/socket/appointmentSocket.js";
+
 
 // Inicializar variables de entorno
 dotenv.config();
@@ -27,13 +30,6 @@ app.use("/api/users", userRoutes); // Rutas de usuario
 app.use("/api/services", serviceRoutes); // Rutas de servicios
 app.use("/api/customers", customerRoutes); // Rutas de clientes
 
-// Levantar servidor
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
-
-
 app.get("/health", (req, res) => {
   res.json({
     uptime: process.uptime(),
@@ -45,12 +41,13 @@ app.get("/health", (req, res) => {
 
 // Socket.IO
 const server = http.createServer(app);
+// Rutas principales
+app.use("/appointments", appointmentRoutes);
 
-// Usamos variables de entorno
 const Port = process.env.PORT || 3000;
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
     origin: CLIENT_URL,
     methods: ["GET", "POST"],
@@ -60,6 +57,9 @@ const io = new Server(server, {
 // Evento de conexión
 io.on("connection", (socket) => {
   console.log("Cliente conectado:", socket.id);
+
+  // Eventos de appointment centralizados
+  appointmentSocket(io, socket);
 
   // Evento testEvent
   socket.on("testEvent", (data) => {
@@ -72,7 +72,8 @@ io.on("connection", (socket) => {
   });
 });
 
-// Iniciar servidor
-server.listen(Port, () => {
-  console.log(`Servidor corriendo en http://localhost:${Port}`);
+// Levantar servidor
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

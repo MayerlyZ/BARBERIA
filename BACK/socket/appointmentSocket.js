@@ -1,56 +1,56 @@
-// appointmentSocket.js - Archivo inicial
+// appointmentSocket.js - Initial file
 
 export default function appointmentSocket(io) {
     // Cuando un cliente se conecta
     io.on("connection", (socket) => {
-        console.log(`Cliente conectado: ${socket.id}`);
+        console.log(`Client connected: ${socket.id}`);
 
         /**
-         * 🟢 Evento: nuevaReserva
+         * 🟢 Event: newReservation
          * - Un cliente crea una nueva cita
          * - Notificamos al cliente que la envió
          * - Hacemos broadcast a los demás clientes
          */
-        socket.on("nuevaReserva", (reserva) => {
-            console.log("Nueva reserva recibida:", reserva);
+        socket.on("newReservation", (reservation) => {
+            console.log("New reservation received:", reservation);
 
             // Confirmar al cliente que envió
-            socket.emit("reservaConfirmada", {
+            socket.emit("reservationConfirmed", {
                 ok: true,
-                reserva
+                reservation
             });
 
             // Notificar a todos los demás
-            socket.broadcast.emit("reservaAgregada", reserva);
+            socket.broadcast.emit("reservationAdded", reservation);
         });
 
         /**
-         * 🟡 Evento: actualizarHorarios
+         * 🟡 Event: updateSchedules
          * - Se actualizan horarios disponibles (ej: bloqueo de horas ocupadas)
          * - Se notifica a todos los clientes
          */
-        socket.on("actualizarHorarios", (horarios) => {
-            console.log(" Actualización de horarios:", horarios);
+        socket.on("updateSchedules", (schedules) => {
+            console.log("Schedules updated:", schedules);
 
             // Enviar a TODOS (incluyendo quien lo envió)
-            io.emit("horariosActualizados", horarios);
+            io.emit("schedulesUpdated", schedules);
         });
 
         /**
-         * 🔴 Evento: cancelarReserva
+         * 🔴 Event: cancelReservation
          * - Un cliente cancela una cita
          * - Se notifica a todos los clientes conectados
          */
-        socket.on("cancelarReserva", (reservaId) => {
-            console.log("Cancelación de reserva ID:", reservaId);
+        socket.on("cancelReservation", (reservationId) => {
+            console.log("Reservation cancelled ID:", reservationId);
 
             // Notificar a todos
-            io.emit("reservaCancelada", reservaId);
+            io.emit("reservationCancelled", reservationId);
         });
 
         // Detectar desconexión
         socket.on("disconnect", () => {
-            console.log(`Cliente desconectado: ${socket.id}`);
+            console.log(`Client disconnected: ${socket.id}`);
         });
     });
 }

@@ -3,30 +3,55 @@
 import mongoose from "mongoose";
 
 const appointmentSchema = new mongoose.Schema({
-    cliente: {
+    // Nombre del cliente
+    client: {
         type: String,
-        required: true,  
-        trim: true
+        required: [true, "Client name is required"],
+        trim: true,
+        minlength: [3, "Client name must be at least 3 characters"],
+        maxlength: [50, "Client name cannot exceed 50 characters"]
     },
-    servicio: {
+
+    // Tipo de servicio solicitado
+    service: {
         type: String,
-        required: true,
-        trim: true
+        required: [true, "Service is required"],
+        trim: true,
+        minlength: [3, "Service must be at least 3 characters"],
+        maxlength: [100, "Service cannot exceed 100 characters"]
     },
-    fecha: {
+
+    // Fecha de la cita
+    date: {
         type: Date,
-        required: true
+        required: [true, "Date is required"],
+        validate: {
+            validator: function (value) {
+                return value >= new Date(); // No se permiten fechas pasadas
+            },
+            message: "Date must be today or in the future"
+        }
     },
-    hora: {
+
+    // Hora de la cita
+    time: {
         type: String,
-        required: true
+        required: [true, "Time is required"],
+        match: [/^([01]\d|2[0-3]):([0-5]\d)$/, "Time must be in HH:MM format (24h)"]
     },
-    estado: {
+
+    // Estado de la cita
+    status: {
         type: String,
-        enum: ["pendiente", "confirmada", "cancelada"],
-        default: "pendiente"
+        enum: {
+            values: ["pending", "confirmed", "cancelled"],
+            message: "Status must be either: pending, confirmed, or cancelled"
+        },
+        default: "pending"
     },
-    creadoEn: {
+
+    // Fecha de creación del registro
+    createdAt: {
         type: Date,
         default: Date.now
     }

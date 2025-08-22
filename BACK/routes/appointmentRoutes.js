@@ -1,13 +1,13 @@
 // appointmentRoutes.js - Archivo inicial
 
 import express from "express";
-import { crearCita, obtenerCitas, editarCitas, cancelarCita } from "../controllers/appointmentController.js";
+import { createAppointment, getAppointments, updateAppointments, cancelAppointment } from "../controllers/appointmentController.js";
 
 const router = express.Router();
 
-router.get ("/", obtenerCitas); // Obtenr todas las citas
-router.post("/", crearCita); // Creacion de citas
-router.put("/:id", editarCitas); // Editar las citas
-router.get("/:id", cancelarCita); // Cancelar citas
+router.get("/", getAppointments); // Obtenr todas las citas
+router.post("/", createAppointment); // Creacion de citas
+router.put("/:id", updateAppointments); // Editar las citas
+router.get("/:id", cancelAppointment); // Cancelar citas
 
 export default router;
